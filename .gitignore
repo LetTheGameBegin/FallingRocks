@@ -1,0 +1,14 @@
+
+Debug
+Debug/*
+*.vcxproj
+ipch
+ipch/*
+*.sln
+*.vcxproj.filters
+*.sdf
+stdafx.h
+stdafx.cpp
+targetver.h
+ReadMe.txt
+FallingRocksBetter.cpp
