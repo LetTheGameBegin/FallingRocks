@@ -32,7 +32,7 @@ vector<GameObject> rocks;
 vector<GameObject> line;
 vector<GameObject> bonus;
 vector<GameObject> bonusNegative;
-
+vector<GameObject> dwarf2;
 
 unsigned int frameCounter = 0;
 unsigned int rockSpawnInterval = 5;
@@ -68,6 +68,67 @@ void Update()
 	{
 		dwarfBody->Coordinates.X += direction.X;
 		dwarfBody->Coordinates.Y += direction.Y;
+		if (dwarfBody->Coordinates.X >= WindowWidth)
+		{
+			for (randomAccess_iterator dwarfBody = dwarf.begin(); dwarfBody != dwarf.end(); ++dwarfBody)
+			{
+				dwarfBody->Coordinates.X -= direction.X;
+			}
+		}
+		if (dwarfBody->Coordinates.X <0)
+		{
+			for (randomAccess_iterator dwarfBody = dwarf.begin(); dwarfBody != dwarf.end(); ++dwarfBody)
+			{
+				dwarfBody->Coordinates.X -= direction.X;
+			}
+		}
+		if (dwarfBody->Coordinates.Y >= WindowHeight - 4)
+		{
+			for (randomAccess_iterator dwarfBody = dwarf.begin(); dwarfBody != dwarf.end(); ++dwarfBody)
+			{
+				dwarfBody->Coordinates.Y -= direction.Y;
+			}
+		}
+		if (dwarfBody->Coordinates.Y <0)
+		{
+			for (randomAccess_iterator dwarfBody = dwarf.begin(); dwarfBody != dwarf.end(); ++dwarfBody)
+			{
+				dwarfBody->Coordinates.Y -= direction.Y;
+			}
+		}
+	}
+	for (randomAccess_iterator dwarfBody = dwarf2.begin(); dwarfBody != dwarf2.end(); ++dwarfBody)
+	{
+		dwarfBody->Coordinates.X += direction.X;
+		dwarfBody->Coordinates.Y += direction.Y;
+		if (dwarfBody->Coordinates.X >= WindowWidth)
+		{
+			for (randomAccess_iterator dwarfBody = dwarf2.begin(); dwarfBody != dwarf2.end(); ++dwarfBody)
+			{
+				dwarfBody->Coordinates.X -= direction.X;
+			}
+		}
+		if (dwarfBody->Coordinates.X <0)
+		{
+			for (randomAccess_iterator dwarfBody = dwarf2.begin(); dwarfBody != dwarf2.end(); ++dwarfBody)
+			{
+				dwarfBody->Coordinates.X -= direction.X;
+			}
+		}
+		if (dwarfBody->Coordinates.Y >= WindowHeight - 4)
+		{
+			for (randomAccess_iterator dwarfBody = dwarf2.begin(); dwarfBody != dwarf2.end(); ++dwarfBody)
+			{
+				dwarfBody->Coordinates.Y -= direction.Y;
+			}
+		}
+		if (dwarfBody->Coordinates.Y <0)
+		{
+			for (randomAccess_iterator dwarfBody = dwarf2.begin(); dwarfBody != dwarf2.end(); ++dwarfBody)
+			{
+				dwarfBody->Coordinates.Y -= direction.Y;
+			}
+		}
 	}
 	
 
@@ -75,7 +136,7 @@ void Update()
 	for (randomAccess_iterator rock = rocks.begin(); rock != rocks.end(); /* Empty clause so we can delete elements */)
 	{
 		rock->Coordinates.Y += rockSpeed;
-		if (rock->Coordinates.Y > WindowHeight-4.5)
+		if (rock->Coordinates.Y >= WindowHeight-4)
 		{
 			rock = rocks.erase(rock);
 		}
@@ -87,7 +148,7 @@ void Update()
 	for (randomAccess_iterator bonus1 = bonus.begin(); bonus1 != bonus.end(); /* Empty clause so we can delete elements */)
 	{
 		bonus1->Coordinates.Y += rockSpeed;
-		if (bonus1->Coordinates.Y > WindowHeight - 4.5)
+		if (bonus1->Coordinates.Y >= WindowHeight - 4)
 		{
 			bonus1 = bonus.erase(bonus1);
 		}
@@ -99,7 +160,7 @@ void Update()
 	for (randomAccess_iterator bonus3 = bonusNegative.begin(); bonus3 != bonusNegative.end(); /* Empty clause so we can delete elements */)
 	{
 		bonus3->Coordinates.Y += rockSpeed;
-		if (bonus3->Coordinates.Y > WindowHeight - 4.5)
+		if (bonus3->Coordinates.Y >= WindowHeight - 4)
 		{
 			bonus3 = bonusNegative.erase(bonus3);
 		}
@@ -134,7 +195,45 @@ void Update()
 	++frameCounter;
 
 }
+void Draw3()
+{
+	ClearScreen(consoleHandle);
 
+	for (const_iterator dwarfBody = dwarf2.cbegin(); dwarfBody != dwarf2.cend(); ++dwarfBody)
+	{
+		dwarfBody->Draw(consoleHandle);
+	}
+	for (const_iterator dwarfBody = dwarf.cbegin(); dwarfBody != dwarf.cend(); ++dwarfBody)
+	{
+		dwarfBody->Draw(consoleHandle);
+	}
+}
+void Draw2()
+{
+	ClearScreen(consoleHandle);
+
+	for (const_iterator dwarfBody = dwarf2.cbegin(); dwarfBody != dwarf2.cend(); ++dwarfBody)
+	{
+		dwarfBody->Draw(consoleHandle);
+	}
+
+	for (const_iterator rock = rocks.cbegin(); rock != rocks.cend(); ++rock)
+	{
+		rock->Draw(consoleHandle);
+	}
+	for (const_iterator line1 = line.cbegin(); line1 != line.cend(); ++line1)
+	{
+		line1->Draw(consoleHandle);
+	}
+	for (const_iterator bonus2 = bonus.cbegin(); bonus2 != bonus.cend(); ++bonus2)
+	{
+		bonus2->Draw(consoleHandle);
+	}
+	for (const_iterator bonus3 = bonusNegative.cbegin(); bonus3 != bonusNegative.cend(); ++bonus3)
+	{
+		bonus3->Draw(consoleHandle);
+	}
+}
 
 void Draw()
 {
@@ -214,7 +313,7 @@ int main()
 	while (gameOn != false){
 		cout << "*******************************\n";
 		cout << " 1 - Start the game.\n";
-		cout << " 2 - Story.\n";
+		cout << " 2 - Dwarfs.\n";
 		cout << " 3 - Help.\n";
 		cout << " 4 - Exit.\n";
 		cout << " Enter your choice and press return: ";
@@ -228,9 +327,6 @@ int main()
 
 			srand(time(NULL));
 
-			
-			
-
 			dwarf.push_back(GameObject(dwarfX - 1, dwarfY - 1, dwarfSymbol));
 			dwarf.push_back(GameObject(dwarfX, dwarfY - 2, dwarfSymbol));
 			dwarf.push_back(GameObject(dwarfX, dwarfY - 1, dwarfSymbol));
@@ -243,7 +339,6 @@ int main()
 			dwarf.push_back(GameObject(dwarfX, dwarfY + 1, dwarfSymbol));
 			dwarf.push_back(GameObject(dwarfX - 1, dwarfY + 2, dwarfSymbol));
 			dwarf.push_back(GameObject(dwarfX + 1, dwarfY + 2, dwarfSymbol));
-
 			while (true)
 			{
 				Update();
@@ -251,45 +346,163 @@ int main()
 				Sleep(sleepDuration);
 				Collision();
 				Collision1();
+				if (_kbhit())
+				{
+					char key1 = _getch();
+					if (key1 == 'p')
+					{
+						system("pause");
+
+					}
+
+					if (key1 == 'm')
+					{
+						ClearScreen(consoleHandle);
+						break;
+						return main();
+					}
+				}
 			}
 			break;
+
 		case 2:
-			consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+		{
+				  consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 
-			srand(time(NULL));
+				  srand(time(NULL));
 
-			cout << "Choose your dwarf:" ;
-			
-			dwarf.push_back(GameObject(dwarfX, dwarfY - 4,'2'));
-			dwarf.push_back(GameObject(dwarfX - 6, dwarfY - 4, '1'));
+				  cout << "Choose your dwarf:";
 
-			dwarf.push_back(GameObject(dwarfX - 1, dwarfY, dwarfSymbol));
-			dwarf.push_back(GameObject(dwarfX, dwarfY - 1, dwarfSymbol));
-			dwarf.push_back(GameObject(dwarfX, dwarfY, dwarfSymbol));
-			dwarf.push_back(GameObject(dwarfX + 1, dwarfY, dwarfSymbol));
-			dwarf.push_back(GameObject(dwarfX + 2, dwarfY, dwarfSymbol));
-			dwarf.push_back(GameObject(dwarfX - 2, dwarfY, dwarfSymbol));
-			dwarf.push_back(GameObject(dwarfX, dwarfY +1, dwarfSymbol));
-			dwarf.push_back(GameObject(dwarfX - 1, dwarfY + 2, dwarfSymbol));
-			dwarf.push_back(GameObject(dwarfX + 1, dwarfY + 2, dwarfSymbol));
+				  dwarf2.push_back(GameObject(dwarfX, dwarfY - 4, '2'));
+				  dwarf.push_back(GameObject(dwarfX - 6, dwarfY - 4, '1'));
 
-			dwarf.push_back(GameObject(dwarfX - 7, dwarfY - 1, dwarfSymbol));
-			dwarf.push_back(GameObject(dwarfX - 6, dwarfY - 2, dwarfSymbol));
-			dwarf.push_back(GameObject(dwarfX - 6, dwarfY - 1, dwarfSymbol));
-			dwarf.push_back(GameObject(dwarfX - 5, dwarfY - 1, dwarfSymbol));
-			dwarf.push_back(GameObject(dwarfX - 4, dwarfY - 1, dwarfSymbol));
-			dwarf.push_back(GameObject(dwarfX - 8, dwarfY - 1, dwarfSymbol));
-			dwarf.push_back(GameObject(dwarfX - 8, dwarfY, dwarfSymbol));
-			dwarf.push_back(GameObject(dwarfX -4, dwarfY - 2, dwarfSymbol));
-			dwarf.push_back(GameObject(dwarfX - 6, dwarfY, dwarfSymbol));
-			dwarf.push_back(GameObject(dwarfX - 6, dwarfY + 1, dwarfSymbol));
-			dwarf.push_back(GameObject(dwarfX - 7, dwarfY + 2, dwarfSymbol));
-			dwarf.push_back(GameObject(dwarfX - 5, dwarfY + 2, dwarfSymbol));
-				Update();
-				Draw();
-				Sleep(sleepDuration);
+				  dwarf2.push_back(GameObject(dwarfX - 1, dwarfY, dwarfSymbol));
+				  dwarf2.push_back(GameObject(dwarfX, dwarfY - 1, dwarfSymbol));
+				  dwarf2.push_back(GameObject(dwarfX, dwarfY, dwarfSymbol));
+				  dwarf2.push_back(GameObject(dwarfX + 1, dwarfY, dwarfSymbol));
+				  dwarf2.push_back(GameObject(dwarfX + 2, dwarfY, dwarfSymbol));
+				  dwarf2.push_back(GameObject(dwarfX - 2, dwarfY, dwarfSymbol));
+				  dwarf2.push_back(GameObject(dwarfX, dwarfY + 1, dwarfSymbol));
+				  dwarf2.push_back(GameObject(dwarfX - 1, dwarfY + 2, dwarfSymbol));
+				  dwarf2.push_back(GameObject(dwarfX + 1, dwarfY + 2, dwarfSymbol));
+
+				  dwarf.push_back(GameObject(dwarfX - 7, dwarfY - 1, dwarfSymbol));
+				  dwarf.push_back(GameObject(dwarfX - 6, dwarfY - 2, dwarfSymbol));
+				  dwarf.push_back(GameObject(dwarfX - 6, dwarfY - 1, dwarfSymbol));
+				  dwarf.push_back(GameObject(dwarfX - 5, dwarfY - 1, dwarfSymbol));
+				  dwarf.push_back(GameObject(dwarfX - 4, dwarfY - 1, dwarfSymbol));
+				  dwarf.push_back(GameObject(dwarfX - 8, dwarfY - 1, dwarfSymbol));
+				  dwarf.push_back(GameObject(dwarfX - 8, dwarfY, dwarfSymbol));
+				  dwarf.push_back(GameObject(dwarfX - 4, dwarfY - 2, dwarfSymbol));
+				  dwarf.push_back(GameObject(dwarfX - 6, dwarfY, dwarfSymbol));
+				  dwarf.push_back(GameObject(dwarfX - 6, dwarfY + 1, dwarfSymbol));
+				  dwarf.push_back(GameObject(dwarfX - 7, dwarfY + 2, dwarfSymbol));
+				  dwarf.push_back(GameObject(dwarfX - 5, dwarfY + 2, dwarfSymbol));
+
+				  Draw3();
+				  Sleep(sleepDuration);
+				  int number;
+				  cout << endl;
+				  cout << "Choose your dwarf:";
+				  cin >> number;
+				  switch (number)
+				  {
+				  case 1:
+				  {
+							ClearScreen(consoleHandle);
+							consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+
+							srand(time(NULL));
+							dwarf.clear();
+							dwarf2.clear();
+							dwarf.push_back(GameObject(dwarfX - 7, dwarfY - 1, dwarfSymbol));
+							dwarf.push_back(GameObject(dwarfX - 6, dwarfY - 2, dwarfSymbol));
+							dwarf.push_back(GameObject(dwarfX - 6, dwarfY - 1, dwarfSymbol));
+							dwarf.push_back(GameObject(dwarfX - 5, dwarfY - 1, dwarfSymbol));
+							dwarf.push_back(GameObject(dwarfX - 4, dwarfY - 1, dwarfSymbol));
+							dwarf.push_back(GameObject(dwarfX - 8, dwarfY - 1, dwarfSymbol));
+							dwarf.push_back(GameObject(dwarfX - 8, dwarfY, dwarfSymbol));
+							dwarf.push_back(GameObject(dwarfX - 4, dwarfY - 2, dwarfSymbol));
+							dwarf.push_back(GameObject(dwarfX - 6, dwarfY, dwarfSymbol));
+							dwarf.push_back(GameObject(dwarfX - 6, dwarfY + 1, dwarfSymbol));
+							dwarf.push_back(GameObject(dwarfX - 7, dwarfY + 2, dwarfSymbol));
+							dwarf.push_back(GameObject(dwarfX - 5, dwarfY + 2, dwarfSymbol));
+							while (true)
+							{
+								Update();
+								Draw();
+								Sleep(sleepDuration);
+								Collision();
+								Collision1();
+								if (_kbhit())
+								{
+									char key1 = _getch();
+									if (key1 == 'p')
+									{
+										system("pause");
+
+									}
+
+									if (key1 == 'm')
+									{
+										ClearScreen(consoleHandle);
+										break;
+										return main();
+									}
+								}
+							}
+				  }
+					  break;
+				  case 2:
+				  {
+							ClearScreen(consoleHandle);
+							consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+
+							srand(time(NULL));
+							dwarf.clear();
+							dwarf2.clear();
+							dwarf2.push_back(GameObject(dwarfX - 1, dwarfY, dwarfSymbol));
+							dwarf2.push_back(GameObject(dwarfX, dwarfY - 1, dwarfSymbol));
+							dwarf2.push_back(GameObject(dwarfX, dwarfY, dwarfSymbol));
+							dwarf2.push_back(GameObject(dwarfX + 1, dwarfY, dwarfSymbol));
+							dwarf2.push_back(GameObject(dwarfX + 2, dwarfY, dwarfSymbol));
+							dwarf2.push_back(GameObject(dwarfX - 2, dwarfY, dwarfSymbol));
+							dwarf2.push_back(GameObject(dwarfX, dwarfY + 1, dwarfSymbol));
+							dwarf2.push_back(GameObject(dwarfX - 1, dwarfY + 2, dwarfSymbol));
+							dwarf2.push_back(GameObject(dwarfX + 1, dwarfY + 2, dwarfSymbol));
+
+							while (true)
+							{
+								Update();
+								Draw2();
+								Sleep(sleepDuration);
+								Collision();
+								Collision1();
+								if (_kbhit())
+								{
+									char key1 = _getch();
+									if (key1 == 'p')
+									{
+										system("pause");
+
+									}
+
+									if (key1 == 'm')
+									{
+										ClearScreen(consoleHandle);
+										break;
+										return main();
+									}
+								}
+							}
+				  }
+					  break;
+
+				  default:
+					  break;
+				  }
+		}
 			break;
-			gameOn = false;
 		case 3:
 			cout << "Ahahah, you really think I will help you?\n";
 			// rest of code here
@@ -306,7 +519,7 @@ int main()
 		}
 
 	}
-	
+
 
 	return 0;
 }
