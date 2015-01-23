@@ -4,6 +4,11 @@
 #include <conio.h>
 #include <time.h>
 #include "ConsoleGaming.h"
+#include <MMSystem.h>
+#include <windows.h>
+
+#define sndPlaySoundW
+#define SND_ASYNC
 
 using namespace std;
 
@@ -20,6 +25,7 @@ const char RockSymbol = '#';
 const char RockSymbol1 = '%^';
 const char RockSymbol2 = '&!&';
 int rockSpeed = 2;
+int temp = 0;
 
 // Dwarf variables
 int dwarfSpeed = 2;
@@ -29,7 +35,6 @@ unsigned long sleepDuration = 200;
 
 vector<GameObject> dwarf;
 vector<GameObject> rocks;
-vector<GameObject> line;
 vector<GameObject> bonus;
 vector<GameObject> bonusNegative;
 vector<GameObject> dwarf2;
@@ -38,6 +43,7 @@ unsigned int frameCounter = 0;
 unsigned int rockSpawnInterval = 5;
 unsigned int rockSpawnInterval2 = 20;
 unsigned int rockSpawnInterval3 = 25;
+unsigned int rockSpawnInterval4 = 150;
 void Update()
 {
 	COORD direction = { 0, 0 };
@@ -193,6 +199,7 @@ void Update()
 		bonusNegative.push_back(GameObject(x + 2, 0, RockSymbol2));
 	}
 	++frameCounter;
+	
 
 }
 void Draw3()
@@ -221,10 +228,6 @@ void Draw2()
 	{
 		rock->Draw(consoleHandle);
 	}
-	for (const_iterator line1 = line.cbegin(); line1 != line.cend(); ++line1)
-	{
-		line1->Draw(consoleHandle);
-	}
 	for (const_iterator bonus2 = bonus.cbegin(); bonus2 != bonus.cend(); ++bonus2)
 	{
 		bonus2->Draw(consoleHandle);
@@ -248,10 +251,6 @@ void Draw()
 	{
 		rock->Draw(consoleHandle);
 	}
-	for (const_iterator line1 = line.cbegin(); line1 != line.cend(); ++line1)
-	{
-		line1->Draw(consoleHandle);
-	}
 	for (const_iterator bonus2 = bonus.cbegin(); bonus2 != bonus.cend(); ++bonus2)
 	{
 		bonus2->Draw(consoleHandle);
@@ -270,7 +269,41 @@ void Collision()
 			if ((rock->Coordinates.Y == dwarfBody->Coordinates.Y) && (rock->Coordinates.X == dwarfBody->Coordinates.X))
 			{
 				ClearScreen(consoleHandle);
-				cout << "GAME OVER! ";
+				cout << "GAME OVER! "<<endl;
+				cout << "Your score: " << frameCounter << endl;
+				if (temp <= frameCounter)
+				{
+					temp = frameCounter;
+					cout << "Highscore: " << temp << endl;
+				}
+				else
+				{
+					cout << "Highscore: " << temp << endl;
+				}
+				frameCounter = 0;
+				system("pause");
+			}
+		}
+	}
+	for (const_iterator dwarfBody = dwarf2.cbegin(); dwarfBody != dwarf2.cend(); ++dwarfBody)
+	{
+		for (const_iterator rock = rocks.cbegin(); rock != rocks.cend(); ++rock)
+		{
+			if ((rock->Coordinates.Y == dwarfBody->Coordinates.Y) && (rock->Coordinates.X == dwarfBody->Coordinates.X))
+			{
+				ClearScreen(consoleHandle);
+				cout << "GAME OVER! "<<endl;
+				cout << "Your score: " << frameCounter<<endl;
+				if (temp <= frameCounter)
+				{
+					temp = frameCounter;
+					cout << "Highscore: " << temp << endl;
+				}
+				else
+				{
+					cout << "Highscore: " << temp << endl;
+				}
+				frameCounter = 0;
 				system("pause");
 			}
 		}
@@ -298,6 +331,26 @@ void Collision1()
 			}
 		}
 	}
+	for (const_iterator dwarfBody = dwarf2.cbegin(); dwarfBody != dwarf2.cend(); ++dwarfBody)
+	{
+		for (const_iterator bonus2 = bonus.cbegin(); bonus2 != bonus.cend(); ++bonus2)
+		{
+			if ((bonus2->Coordinates.Y == dwarfBody->Coordinates.Y) && (bonus2->Coordinates.X == dwarfBody->Coordinates.X))
+			{
+				dwarfSpeed = 5;
+			}
+		}
+	}
+	for (const_iterator dwarfBody = dwarf2.cbegin(); dwarfBody != dwarf2.cend(); ++dwarfBody)
+	{
+		for (const_iterator bonus3 = bonusNegative.cbegin(); bonus3 != bonusNegative.cend(); ++bonus3)
+		{
+			if ((bonus3->Coordinates.Y == dwarfBody->Coordinates.Y) && (bonus3->Coordinates.X == dwarfBody->Coordinates.X))
+			{
+				rockSpeed = 5;
+			}
+		}
+	}
 }
 
 
@@ -307,8 +360,9 @@ int main()
 	int dwarfX = WindowWidth / 2;
 	char dwarfSymbol = 'x';
 	int lineY = WindowHeight - 4.4;
-	char lineSymbol = '_';
 	int choice;
+	
+	
 	bool gameOn = true;
 	while (gameOn != false){
 		cout << "*******************************\n";
@@ -323,46 +377,47 @@ int main()
 		switch (choice)
 		{
 		case 1:
-			consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+		{
+				  consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 
-			srand(time(NULL));
+				  srand(time(NULL));
 
-			dwarf.push_back(GameObject(dwarfX - 1, dwarfY - 1, dwarfSymbol));
-			dwarf.push_back(GameObject(dwarfX, dwarfY - 2, dwarfSymbol));
-			dwarf.push_back(GameObject(dwarfX, dwarfY - 1, dwarfSymbol));
-			dwarf.push_back(GameObject(dwarfX + 1, dwarfY - 1, dwarfSymbol));
-			dwarf.push_back(GameObject(dwarfX + 2, dwarfY - 1, dwarfSymbol));
-			dwarf.push_back(GameObject(dwarfX - 2, dwarfY - 1, dwarfSymbol));
-			dwarf.push_back(GameObject(dwarfX - 2, dwarfY, dwarfSymbol));
-			dwarf.push_back(GameObject(dwarfX + 2, dwarfY - 2, dwarfSymbol));
-			dwarf.push_back(GameObject(dwarfX, dwarfY, dwarfSymbol));
-			dwarf.push_back(GameObject(dwarfX, dwarfY + 1, dwarfSymbol));
-			dwarf.push_back(GameObject(dwarfX - 1, dwarfY + 2, dwarfSymbol));
-			dwarf.push_back(GameObject(dwarfX + 1, dwarfY + 2, dwarfSymbol));
-			while (true)
-			{
-				Update();
-				Draw();
-				Sleep(sleepDuration);
-				Collision();
-				Collision1();
-				if (_kbhit())
-				{
-					char key1 = _getch();
-					if (key1 == 'p')
-					{
-						system("pause");
+				  dwarf.push_back(GameObject(dwarfX - 1, dwarfY - 1, dwarfSymbol));
+				  dwarf.push_back(GameObject(dwarfX, dwarfY - 2, dwarfSymbol));
+				  dwarf.push_back(GameObject(dwarfX, dwarfY - 1, dwarfSymbol));
+				  dwarf.push_back(GameObject(dwarfX + 1, dwarfY - 1, dwarfSymbol));
+				  dwarf.push_back(GameObject(dwarfX + 2, dwarfY - 1, dwarfSymbol));
+				  dwarf.push_back(GameObject(dwarfX - 2, dwarfY - 1, dwarfSymbol));
+				  dwarf.push_back(GameObject(dwarfX - 2, dwarfY, dwarfSymbol));
+				  dwarf.push_back(GameObject(dwarfX + 2, dwarfY - 2, dwarfSymbol));
+				  dwarf.push_back(GameObject(dwarfX, dwarfY, dwarfSymbol));
+				  dwarf.push_back(GameObject(dwarfX, dwarfY + 1, dwarfSymbol));
+				  dwarf.push_back(GameObject(dwarfX - 1, dwarfY + 2, dwarfSymbol));
+				  dwarf.push_back(GameObject(dwarfX + 1, dwarfY + 2, dwarfSymbol));
+				  while (true)
+				  {
+					  Update();
+					  Draw();
+					  Sleep(sleepDuration);
+					  Collision();
+					  Collision1();
+					  if (_kbhit())
+					  {
+						  char key1 = _getch();
+						  if (key1 == 'p')
+						  {
+							  system("pause");
 
-					}
+						  }
 
-					if (key1 == 'm')
-					{
-						ClearScreen(consoleHandle);
-						break;
-						return main();
-					}
-				}
-			}
+						  if (key1 == 'm')
+						  {
+							  ClearScreen(consoleHandle);
+							  return main();
+						  }
+					  }
+				  }
+		}
 			break;
 
 		case 2:
@@ -407,119 +462,138 @@ int main()
 				  cin >> number;
 				  switch (number)
 				  {
-				  case 1:
-				  {
-							ClearScreen(consoleHandle);
-							consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-
-							srand(time(NULL));
-							dwarf.clear();
-							dwarf2.clear();
-							dwarf.push_back(GameObject(dwarfX - 7, dwarfY - 1, dwarfSymbol));
-							dwarf.push_back(GameObject(dwarfX - 6, dwarfY - 2, dwarfSymbol));
-							dwarf.push_back(GameObject(dwarfX - 6, dwarfY - 1, dwarfSymbol));
-							dwarf.push_back(GameObject(dwarfX - 5, dwarfY - 1, dwarfSymbol));
-							dwarf.push_back(GameObject(dwarfX - 4, dwarfY - 1, dwarfSymbol));
-							dwarf.push_back(GameObject(dwarfX - 8, dwarfY - 1, dwarfSymbol));
-							dwarf.push_back(GameObject(dwarfX - 8, dwarfY, dwarfSymbol));
-							dwarf.push_back(GameObject(dwarfX - 4, dwarfY - 2, dwarfSymbol));
-							dwarf.push_back(GameObject(dwarfX - 6, dwarfY, dwarfSymbol));
-							dwarf.push_back(GameObject(dwarfX - 6, dwarfY + 1, dwarfSymbol));
-							dwarf.push_back(GameObject(dwarfX - 7, dwarfY + 2, dwarfSymbol));
-							dwarf.push_back(GameObject(dwarfX - 5, dwarfY + 2, dwarfSymbol));
-							while (true)
-							{
-								Update();
-								Draw();
-								Sleep(sleepDuration);
-								Collision();
-								Collision1();
-								if (_kbhit())
-								{
-									char key1 = _getch();
-									if (key1 == 'p')
-									{
-										system("pause");
-
-									}
-
-									if (key1 == 'm')
-									{
+							  case 1:
+							  {
 										ClearScreen(consoleHandle);
-										break;
-										return main();
-									}
-								}
-							}
-				  }
-					  break;
-				  case 2:
-				  {
-							ClearScreen(consoleHandle);
-							consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+										consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 
-							srand(time(NULL));
-							dwarf.clear();
-							dwarf2.clear();
-							dwarf2.push_back(GameObject(dwarfX - 1, dwarfY, dwarfSymbol));
-							dwarf2.push_back(GameObject(dwarfX, dwarfY - 1, dwarfSymbol));
-							dwarf2.push_back(GameObject(dwarfX, dwarfY, dwarfSymbol));
-							dwarf2.push_back(GameObject(dwarfX + 1, dwarfY, dwarfSymbol));
-							dwarf2.push_back(GameObject(dwarfX + 2, dwarfY, dwarfSymbol));
-							dwarf2.push_back(GameObject(dwarfX - 2, dwarfY, dwarfSymbol));
-							dwarf2.push_back(GameObject(dwarfX, dwarfY + 1, dwarfSymbol));
-							dwarf2.push_back(GameObject(dwarfX - 1, dwarfY + 2, dwarfSymbol));
-							dwarf2.push_back(GameObject(dwarfX + 1, dwarfY + 2, dwarfSymbol));
+										srand(time(NULL));
+										dwarf.clear();
+										dwarf2.clear();
+										dwarf.push_back(GameObject(dwarfX - 7, dwarfY - 1, dwarfSymbol));
+										dwarf.push_back(GameObject(dwarfX - 6, dwarfY - 2, dwarfSymbol));
+										dwarf.push_back(GameObject(dwarfX - 6, dwarfY - 1, dwarfSymbol));
+										dwarf.push_back(GameObject(dwarfX - 5, dwarfY - 1, dwarfSymbol));
+										dwarf.push_back(GameObject(dwarfX - 4, dwarfY - 1, dwarfSymbol));
+										dwarf.push_back(GameObject(dwarfX - 8, dwarfY - 1, dwarfSymbol));
+										dwarf.push_back(GameObject(dwarfX - 8, dwarfY, dwarfSymbol));
+										dwarf.push_back(GameObject(dwarfX - 4, dwarfY - 2, dwarfSymbol));
+										dwarf.push_back(GameObject(dwarfX - 6, dwarfY, dwarfSymbol));
+										dwarf.push_back(GameObject(dwarfX - 6, dwarfY + 1, dwarfSymbol));
+										dwarf.push_back(GameObject(dwarfX - 7, dwarfY + 2, dwarfSymbol));
+										dwarf.push_back(GameObject(dwarfX - 5, dwarfY + 2, dwarfSymbol));
+										while (true)
+										{
+											Update();
+											Draw();
+											Sleep(sleepDuration);
+											Collision();
+											Collision1();
+											if (_kbhit())
+											{
+												char key1 = _getch();
+												if (key1 == 'p')
+												{
+													system("pause");
+												}
 
-							while (true)
-							{
-								Update();
-								Draw2();
-								Sleep(sleepDuration);
-								Collision();
-								Collision1();
-								if (_kbhit())
-								{
-									char key1 = _getch();
-									if (key1 == 'p')
-									{
-										system("pause");
+												if (key1 == 'm')
+												{
+													ClearScreen(consoleHandle);
+													break;
+													return main();
+												}
+											}
+										}
+							  }
 
-									}
-
-									if (key1 == 'm')
-									{
+								  break;
+							  case 2:
+							  {
 										ClearScreen(consoleHandle);
-										break;
-										return main();
-									}
-								}
-							}
-				  }
-					  break;
+										consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 
-				  default:
-					  break;
-				  }
+										srand(time(NULL));
+										dwarf.clear();
+										dwarf2.clear();
+										dwarf2.push_back(GameObject(dwarfX - 1, dwarfY, dwarfSymbol));
+										dwarf2.push_back(GameObject(dwarfX, dwarfY - 1, dwarfSymbol));
+										dwarf2.push_back(GameObject(dwarfX, dwarfY, dwarfSymbol));
+										dwarf2.push_back(GameObject(dwarfX + 1, dwarfY, dwarfSymbol));
+										dwarf2.push_back(GameObject(dwarfX + 2, dwarfY, dwarfSymbol));
+										dwarf2.push_back(GameObject(dwarfX - 2, dwarfY, dwarfSymbol));
+										dwarf2.push_back(GameObject(dwarfX, dwarfY + 1, dwarfSymbol));
+										dwarf2.push_back(GameObject(dwarfX - 1, dwarfY + 2, dwarfSymbol));
+										dwarf2.push_back(GameObject(dwarfX + 1, dwarfY + 2, dwarfSymbol));
+
+										while (true)
+										{
+											Update();
+											Draw2();
+											Sleep(sleepDuration);
+											Collision();
+											Collision1();
+											if (_kbhit())
+											{
+												char key1 = _getch();
+												if (key1 == 'p')
+												{
+													system("pause");
+
+												}
+
+												if (key1 == 'm')
+												{
+													ClearScreen(consoleHandle);
+													break;
+													return main();
+												}
+											}
+										}
+							  }
+								  break;
+
+							 default:
+									  {
+												 ClearScreen(consoleHandle);
+												 break;
+												 return main();
+									  }
+									  break;
+				 }
 		}
-			break;
+		  break;
 		case 3:
-			cout << "Ahahah, you really think I will help you?\n";
-			// rest of code here
+		{
+			 ClearScreen(consoleHandle);
+			cout << "Ahahah, you really thought I will help you?\n"<<endl;
+			system("pause");
+			
+		}
 			break;
 		case 4:
-			cout << "End of Program.\n";
-			gameOn = false;
+		{
+				  cout << "End of Program.\n";
+				  system("pause");
+				  gameOn = false;
+		}
 			break;
 		default:
-			cout << "Not a Valid Choice. \n";
-			cout << "Choose again.\n";
-			cin >> choice;
+			{
+				 
+					   cout << "Not a Valid Choice. \n";
+					   cout << "Choose again.\n";
+					   system("pause");
+					   gameOn = false;
+					  
+			}
 			break;
 		}
+	
+	
 
 	}
 
-
+	
 	return 0;
 }
